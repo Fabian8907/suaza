@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuración - Suazapawa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#002878] text-white flex flex-col shadow-2xl fixed h-full">
+        <div class="p-6 text-center border-b border-blue-800">
+            <h2 class="text-2xl font-bold">Suaza<span class="text-[#d41118]">pawa</span></h2>
+        </div>
+        <nav class="flex-grow p-4 space-y-2">
+            <a href="{% url 'dashboard_carrusel' %}" class="block py-3 px-4 rounded hover:bg-blue-800 transition"><i class="fas fa-images mr-2"></i> Carrusel Principal</a>
+            <a href="{% url 'dashboard_tarjetas' %}" class="block py-3 px-4 rounded hover:bg-blue-800 transition"><i class="fas fa-th-large mr-2"></i> Tarjetas Flotantes</a>
+            <a href="{% url 'dashboard_configuracion' %}" class="block py-3 px-4 rounded bg-blue-900 shadow"><i class="fas fa-cogs mr-2"></i> Fondo / Config</a>
+            <a href="{% url 'inicio' %}" target="_blank" class="block py-3 px-4 rounded hover:bg-[#d41118] transition mt-8"><i class="fas fa-external-link-alt mr-2"></i> Ver Sitio</a>
+        </nav>
+    </aside>
+
+    <main class="flex-grow p-8 ml-64 flex justify-center items-start pt-16">
+        <div class="bg-white p-10 rounded-xl shadow-xl w-full max-w-2xl border-t-4 border-[#002878]">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Configuración de Fondos</h1>
+            <p class="text-gray-600 mb-8">Sube la imagen que quieres mostrar en la sección inferior de la página principal (Efecto Parallax).</p>
+            
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                {{ form.as_p }}
+                
+                {% if config.fondo_seccion %}
+                <div class="mt-6 border p-4 rounded bg-gray-50">
+                    <p class="font-bold mb-2">Fondo Actual:</p>
+                    <img src="{{ config.fondo_seccion.url }}" class="h-40 rounded shadow object-cover w-full">
+                </div>
+                {% endif %}
+                
+                <button type="submit" class="w-full bg-[#d41118] text-white font-bold py-3 rounded-lg hover:bg-red-800 transition shadow-lg mt-6"><i class="fas fa-save mr-2"></i> Aplicar Cambios</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

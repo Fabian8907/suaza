@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Galería - Suazapawa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex min-h-screen">
+    <aside class="w-64 bg-[#002878] text-white flex flex-col shadow-2xl fixed h-full z-40">
+        <div class="p-6 text-center border-b border-blue-800"><h2 class="text-2xl font-bold">Panel Suaza</h2></div>
+        <nav class="flex-grow p-4 space-y-2">
+            <a href="{% url 'dashboard_carrusel' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-images mr-2"></i> Carrusel Principal</a>
+            <a href="{% url 'dashboard_tarjetas' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-th-large mr-2"></i> Tarjetas Pilares</a>
+            <a href="{% url 'dashboard_secciones' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-columns mr-2"></i> Secciones Dobles</a>
+            <a href="{% url 'dashboard_campus' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-school mr-2"></i> Sección Campus</a>
+            <a href="{% url 'dashboard_galeria' %}" class="block py-3 px-4 rounded bg-blue-900 shadow"><i class="fas fa-photo-video mr-2"></i> Mosaico Galería</a>
+            <a href="{% url 'dashboard_noticias' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-newspaper mr-2"></i> Noticias y Eventos</a>
+            <a href="{% url 'dashboard_admisiones' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-user-edit mr-2"></i> Solicitudes Admisión</a>
+        </nav>
+    </aside>
+
+    <main class="flex-grow p-8 ml-64">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Mosaico de Galería Fotográfica</h1>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-md h-fit">
+                <h3 class="text-xl font-bold mb-4 border-b pb-2">Subir Foto</h3>
+                <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="w-full bg-[#d41118] text-white font-bold py-3 rounded-xl hover:bg-red-800 transition">Añadir al Mosaico</button>
+                </form>
+            </div>
+            <div class="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-4">
+                {% for item in items %}
+                <div class="bg-white rounded-xl shadow overflow-hidden relative group">
+                    <img src="{{ item.imagen.url }}" class="w-full h-36 object-cover">
+                    <div class="p-3">
+                        <h5 class="font-bold text-sm truncate">{{ item.titulo }}</h5>
+                        {% if item.destacada %}<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">Tamaño Doble</span>{% endif %}
+                    </div>
+                    <a href="{% url 'eliminar_galeria' item.pk %}" onclick="return confirm('¿Eliminar?');" class="absolute top-2 right-2 bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition shadow"><i class="fas fa-trash"></i></a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

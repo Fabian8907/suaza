@@ -1,0 +1,354 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Efecto Cortina (Implementación Milimétrica con Clip-Path) */
+    .slice-container { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden; }
+    
+    /* Al usar absolute e inset-0, las 4 imágenes ocupan el 100% de la pantalla. Clip-path recorta los trozos exactos */
+    .slice { position: absolute; inset: 0; width: 100%; height: 100%; }
+    
+    /* Los recortes son: Arriba - Derecha - Abajo - Izquierda */
+    .slice:nth-child(1) { clip-path: inset(0 75% 0 0); }
+    .slice:nth-child(2) { clip-path: inset(0 50% 0 25%); }
+    .slice:nth-child(3) { clip-path: inset(0 25% 0 50%); }
+    .slice:nth-child(4) { clip-path: inset(0 0 0 75%); }
+    
+    .slice img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .slide-content { z-index: 20; position: relative; }
+    
+    /* Flechas Swiper corporativas */
+    .swiper-button-next, .swiper-button-prev { color: rgba(255,255,255,0.8) !important; background-color: rgba(0,40,120,0.4); width: 60px !important; height: 60px !important; border-radius: 50%; transition: 0.3s; }
+    .swiper-button-next:hover, .swiper-button-prev:hover { background-color: #E3003F; color: white !important; }
+    .swiper-button-next::after, .swiper-button-prev::after { font-size: 24px !important; }
+
+    /* Galería Thumbnails */
+    .gallery-thumbs .swiper-slide { opacity: 0.4; cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
+    .gallery-thumbs .swiper-slide-thumb-active { opacity: 1; border-color: #E3003F; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- 1. CARRUSEL PRINCIPAL -->
+<div class="relative h-screen w-full bg-[#001133] overflow-hidden z-20">
+    <div class="swiper heroSwiper h-full w-full">
+        <div class="swiper-wrapper">
+            {% for slide in slides %}
+            <div class="swiper-slide relative overflow-hidden bg-[#001133]">
+                
+                <!-- Contenedor GSAP de cortinas -->
+                {% if slide.imagen and not slide.video_fondo %}
+                <div class="slice-container">
+                    <div class="slice"><img src="{{ slide.imagen.url }}" alt="{{ slide.titulo }}"></div>
+                    <div class="slice"><img src="{{ slide.imagen.url }}" alt="{{ slide.titulo }}"></div>
+                    <div class="slice"><img src="{{ slide.imagen.url }}" alt="{{ slide.titulo }}"></div>
+                    <div class="slice"><img src="{{ slide.imagen.url }}" alt="{{ slide.titulo }}"></div>
+                </div>
+                {% endif %}
+                
+                {% if slide.video_fondo %}
+                <video src="{{ slide.video_fondo.url }}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0"></video>
+                {% endif %}
+                
+                <!-- Overlay muy tenue solo para legibilidad del texto sin oscurecer la imagen -->
+                <div class="absolute inset-0 bg-black/10 z-10 pointer-events-none"></div>
+                
+                <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4 slide-content opacity-0 translate-y-8">
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 uppercase tracking-tight" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.8);">{{ slide.titulo }}</h1>
+                    <p class="text-xl md:text-3xl text-gray-200 mb-10 max-w-4xl" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.8);">{{ slide.subtitulo }}</p>
+                    {% if slide.enlace_boton %}
+                    <a href="{{ slide.enlace_boton }}" class="bg-suazared text-white px-10 py-4 rounded-full text-lg font-bold hover:bg-red-800 transition shadow-2xl">{{ slide.texto_boton }}</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="swiper-button-next hidden md:flex"></div>
+        <div class="swiper-button-prev hidden md:flex"></div>
+    </div>
+</div>
+
+<!-- 2. TARJETAS PILARES -->
+<div class="bg-suazalight py-24 relative z-20">
+    <div class="max-w-[90%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        {% for tarjeta in tarjetas %}
+        <div data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00" class="bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col border border-gray-100 hover:shadow-2xl transition duration-500 hover:-translate-y-2 group">
+            <div class="h-64 overflow-hidden relative">
+                {% if tarjeta.imagen %}
+                <img src="{{ tarjeta.imagen.url }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                {% endif %}
+            </div>
+            <div class="p-8 flex-grow flex flex-col items-center text-center">
+                <h3 class="text-2xl font-bold text-suazablue mb-4">{{ tarjeta.titulo }}</h3>
+                <p class="text-gray-500 mb-8 flex-grow text-sm leading-relaxed">{{ tarjeta.descripcion }}</p>
+                {% if tarjeta.enlace %}
+                <a href="{{ tarjeta.enlace }}" class="bg-suazared text-white px-8 py-2.5 rounded-full font-bold hover:bg-red-800 transition w-max shadow-md">Saber más</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- 3. SECCIONES DOBLES -->
+<div class="relative z-20 bg-white">
+    {% for sec in secciones_dobles %}
+    <div class="py-24 {% if forloop.counter|divisibleby:2 %}bg-suazalight{% else %}bg-white{% endif %}">
+        <div class="max-w-[90%] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="space-y-6 {% if sec.alineacion_imagen_derecha %}lg:order-1{% else %}lg:order-2{% endif %}" data-aos="fade-right">
+                <span class="text-suazared uppercase tracking-widest font-extrabold text-sm">{{ sec.subtitulo }}</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-suazablue">{{ sec.titulo }}</h2>
+                <p class="text-gray-600 text-lg leading-relaxed whitespace-pre-line">{{ sec.contenido }}</p>
+            </div>
+            <div class="rounded-3xl shadow-2xl overflow-hidden h-[450px] group {% if sec.alineacion_imagen_derecha %}lg:order-2{% else %}lg:order-1{% endif %}" data-aos="fade-left">
+                {% if sec.imagen %}
+                <img src="{{ sec.imagen.url }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- 4. SECCIÓN CAMPUS -->
+{% if campus %}
+<div class="flex flex-col relative z-20">
+    <div class="relative bg-fixed bg-center bg-cover py-32" {% if campus.imagen_fondo_azul %}style="background-image: url('{{ campus.imagen_fondo_azul.url }}');"{% elif campus.imagen_fondo %}style="background-image: url('{{ campus.imagen_fondo.url }}');"{% endif %}>
+        <div class="absolute inset-0 bg-[#002878]/90"></div>
+        <div class="relative z-10 max-w-5xl mx-auto px-4 text-center text-white space-y-8" data-aos="zoom-in">
+            <h2 class="text-4xl md:text-6xl font-black uppercase">{{ campus.titulo }}</h2>
+            <p class="text-xl md:text-2xl text-gray-200 leading-relaxed font-light max-w-4xl mx-auto">{{ campus.descripcion }}</p>
+            {% if campus.enlace_video %}
+            <a href="{{ campus.enlace_video }}" target="_blank" class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-suazared text-white text-2xl animate-bounce hover:bg-red-800 transition shadow-2xl"><i class="fas fa-play ml-1"></i></a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="relative bg-fixed bg-center bg-cover py-32 border-t border-gray-200" {% if campus.imagen_fondo_blanco %}style="background-image: url('{{ campus.imagen_fondo_blanco.url }}');"{% endif %}>
+        <div class="absolute inset-0 bg-white/90"></div>
+        <div class="relative z-10 max-w-5xl mx-auto px-4 text-center text-suazablue space-y-8" data-aos="fade-up">
+            <h2 class="text-4xl md:text-6xl font-black uppercase">Instalaciones de Primer Nivel</h2>
+            <p class="text-xl md:text-2xl text-gray-600 leading-relaxed font-light max-w-4xl mx-auto">Nuestro campus está diseñado para impulsar el aprendizaje integral.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- 5. GALERÍA -->
+{% if galeria %}
+<div class="bg-white py-24 border-t border-gray-100 relative z-20">
+    <div class="max-w-[90%] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-4 space-y-6" data-aos="fade-right">
+            <span class="text-gray-400 tracking-widest text-sm font-bold uppercase">Galería</span>
+            <h2 class="text-4xl md:text-5xl font-black text-suazablue">Nuestras Instalaciones</h2>
+            <p class="text-gray-500 leading-relaxed text-lg">Explora nuestros espacios diseñados para el desarrollo académico, deportivo y personal de nuestros estudiantes.</p>
+        </div>
+        
+        <div class="lg:col-span-8 overflow-hidden rounded-2xl shadow-2xl" data-aos="fade-left">
+            <div class="swiper galleryMain w-full h-[400px] md:h-[500px]">
+                <div class="swiper-wrapper">
+                    {% for item in galeria %}
+                    <div class="swiper-slide bg-gray-900 overflow-hidden group">
+                        {% if item.imagen %}
+                        <img src="{{ item.imagen.url }}" class="w-full h-full object-cover opacity-90 transition duration-700 group-hover:scale-110">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+            
+            <div class="swiper gallery-thumbs w-full h-24 bg-gray-100 p-2 box-border">
+                <div class="swiper-wrapper">
+                    {% for item in galeria %}
+                    <div class="swiper-slide rounded overflow-hidden group">
+                        {% if item.imagen %}
+                        <img src="{{ item.imagen.url }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- 6. NOTICIAS Y EVENTOS -->
+<div id="noticias" class="bg-suazalight py-24 relative z-20">
+    <div class="max-w-[90%] mx-auto">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h2 class="text-4xl md:text-5xl font-black text-suazablue">Noticias & Eventos</h2>
+            <div class="w-24 h-1.5 bg-suazared mx-auto mt-4 rounded-full"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {% for noti in noticias %}
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition hover:shadow-2xl hover:-translate-y-1 group" data-aos="fade-up">
+                <div class="h-48 relative overflow-hidden">
+                    {% if noti.imagen %}
+                    <img src="{{ noti.imagen.url }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                    {% endif %}
+                    <span class="absolute top-4 left-4 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full text-white z-10 {% if noti.tipo == 'EVENTO' %}bg-suazared{% else %}bg-suazablue{% endif %}">{{ noti.tipo }}</span>
+                </div>
+                <div class="p-6 flex-grow flex flex-col justify-between z-10 bg-white">
+                    <div>
+                        <span class="text-xs text-gray-400 font-bold block mb-2"><i class="far fa-calendar-alt mr-1"></i> {{ noti.fecha }}</span>
+                        <h3 class="font-bold text-lg text-gray-800 line-clamp-2 mb-3 group-hover:text-suazared transition-colors">{{ noti.titulo }}</h3>
+                        <p class="text-gray-500 text-sm line-clamp-3 mb-4">{{ noti.resumen }}</p>
+                    </div>
+                    <a href="#" class="text-suazablue font-bold text-sm hover:underline">Leer más</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- 7. REDES SOCIALES (Widget Dinámico) -->
+<div class="bg-white py-24 relative z-20 border-t border-gray-100">
+    <div class="max-w-[90%] mx-auto">
+        
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h2 class="text-4xl md:text-5xl font-black text-suazablue">Conéctate con Nosotros</h2>
+            <p class="text-gray-500 mt-4 text-lg">Síguenos en nuestras redes sociales y mantente al día con la comunidad Suazapawa.</p>
+            <div class="flex justify-center space-x-4 mt-8">
+                <a href="https://www.instagram.com/suazapawa/" target="_blank" class="flex items-center space-x-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition shadow-lg">
+                    <i class="fab fa-instagram text-xl"></i> <span>Instagram</span>
+                </a>
+                <a href="https://www.facebook.com/suazapawafanpage" target="_blank" class="flex items-center space-x-2 bg-[#1877F2] text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition shadow-lg">
+                    <i class="fab fa-facebook-f text-xl"></i> <span>Facebook</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenedor del Widget Dinámico -->
+        <div class="w-full max-w-6xl mx-auto bg-gray-50 rounded-2xl p-4 shadow-inner border border-gray-100 overflow-hidden" data-aos="fade-up">
+            <!-- ========================================================= -->
+            <!-- PEGA AQUÍ EL SCRIPT/CÓDIGO DE TU WIDGET (Ej. Elfsight)    -->
+            <!-- ========================================================= -->
+            
+            <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+            <div class="elfsight-app-TU-ID-DE-WIDGET-AQUI"></div>
+            
+            <!-- ========================================================= -->
+        </div>
+
+    </div>
+</div>
+
+<!-- 8. ADMISIONES -->
+<div id="admisiones" class="relative py-32 bg-cover bg-center z-20" style="background-image: url('{% static 'img/portada-suaza.jpg' %}');">
+    <div class="absolute inset-0 bg-suazablue/90"></div>
+    <div class="relative max-w-[90%] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div data-aos="fade-up" class="text-white">
+            <img src="{% static 'img/logo-suaza.png' %}" class="h-32 mb-8 mix-blend-screen bg-white rounded-3xl p-2">
+            <div class="bg-suazared inline-block px-6 py-2 transform -skew-x-12 mb-6 shadow-2xl">
+                <h2 class="text-4xl font-black uppercase tracking-wider skew-x-12 text-white">Admisiones Abiertas</h2>
+            </div>
+            <p class="text-xl text-gray-200">Únete a la excelencia educativa y asegura el futuro brillante de tus hijos en nuestro campus.</p>
+        </div>
+        
+        <div data-aos="fade-up" data-aos-delay="200" class="bg-white p-10 md:p-12 rounded-[32px] shadow-2xl relative">
+            <div class="bg-suazablue text-white text-center py-4 rounded-2xl mb-8 shadow-lg">
+                <h3 class="text-2xl font-bold">Inicia tu proceso de admisión</h3>
+            </div>
+            <p class="text-center text-gray-600 mb-8 font-medium">Conoce más sobre nuestro programa educativo diligenciando el siguiente formulario.</p>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="p-4 mb-6 text-green-800 bg-green-100 rounded-xl font-bold text-center">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="space-y-5">
+                {% csrf_token %}
+                <div><label class="block text-sm text-gray-700 font-bold mb-1">Nombre Acudiente</label>{{ form_admision.nombre_acudiente }}</div>
+                <div><label class="block text-sm text-gray-700 font-bold mb-1">Apellido Acudiente</label>{{ form_admision.apellido_aspirante }}</div>
+                <div><label class="block text-sm text-gray-700 font-bold mb-1">Email</label>{{ form_admision.correo }}</div>
+                <div><label class="block text-sm text-gray-700 font-bold mb-1">Teléfono</label>{{ form_admision.telefono }}</div>
+                <div class="hidden">{{ form_admision.nombre_aspirante }}{{ form_admision.grado_postulacion }}</div>
+                <button type="submit" class="w-full bg-[#E3003F] text-white font-bold py-4 rounded-xl hover:bg-red-800 transition shadow-lg text-lg mt-4">Enviar Formulario</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        // Configuración Swiper + GSAP para Efecto Cortina (Arriba/Abajo) sin retrasos de carga
+        const heroSwiper = new Swiper(".heroSwiper", {
+            effect: "fade", 
+            fadeEffect: { crossFade: true },
+            speed: 0, 
+            autoplay: { delay: 6000, disableOnInteraction: false },
+            loop: true,
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            on: {
+                init: function () {
+                    // Inicializamos el primer slide asegurando que sea visible instantáneamente
+                    const activeSlide = this.slides[this.activeIndex];
+                    const slices = activeSlide.querySelectorAll('.slice');
+                    const content = activeSlide.querySelector('.slide-content');
+                    
+                    // Colocamos las porciones visibles inmediatamente para evitar el parpadeo negro
+                    gsap.set(slices, { yPercent: 0, opacity: 1 });
+                    
+                    if (slices.length > 0) {
+                        // Animación de entrada inicial suave
+                        gsap.from(slices, {
+                            yPercent: (index) => index % 2 === 0 ? -100 : 100,
+                            duration: 1.2,
+                            stagger: 0.1,
+                            ease: "power4.out",
+                            delay: 0.2
+                        });
+                    }
+                    
+                    if (content) {
+                        gsap.set(content, { y: 0, opacity: 1 });
+                        gsap.from(content, { y: 50, opacity: 0, duration: 1, delay: 0.7, ease: "back.out(1.7)" });
+                    }
+                },
+                slideChangeTransitionStart: function () {
+                    const activeSlide = this.slides[this.activeIndex];
+                    const slices = activeSlide.querySelectorAll('.slice');
+                    const content = activeSlide.querySelector('.slide-content');
+                    
+                    if (slices.length > 0) {
+                        gsap.fromTo(slices, 
+                            { yPercent: (index) => index % 2 === 0 ? -100 : 100 },
+                            { yPercent: 0, duration: 1.2, stagger: 0.1, ease: "power4.out" }
+                        );
+                    }
+                    
+                    if (content) {
+                        gsap.fromTo(content, 
+                            { y: 50, opacity: 0 }, 
+                            { y: 0, opacity: 1, duration: 1, delay: 0.5, ease: "back.out(1.7)" }
+                        );
+                    }
+                }
+            }
+        });
+
+        // Galería Interactiva
+        var galleryThumbs = new Swiper(".gallery-thumbs", {
+            spaceBetween: 10,
+            slidesPerView: 4,
+            freeMode: true,
+            watchSlidesProgress: true,
+        });
+        var galleryMain = new Swiper(".galleryMain", {
+            spaceBetween: 10,
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+            thumbs: { swiper: galleryThumbs }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Secciones - Suazapawa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex min-h-screen">
+    <aside class="w-64 bg-[#002878] text-white flex flex-col shadow-2xl fixed h-full z-40">
+        <div class="p-6 text-center border-b border-blue-800"><h2 class="text-2xl font-bold">Panel Suaza</h2></div>
+        <nav class="flex-grow p-4 space-y-2">
+            <a href="{% url 'dashboard_carrusel' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-images mr-2"></i> Carrusel Principal</a>
+            <a href="{% url 'dashboard_tarjetas' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-th-large mr-2"></i> Tarjetas Pilares</a>
+            <a href="{% url 'dashboard_secciones' %}" class="block py-3 px-4 rounded bg-blue-900 shadow"><i class="fas fa-columns mr-2"></i> Secciones Dobles</a>
+            <a href="{% url 'dashboard_campus' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-school mr-2"></i> Sección Campus</a>
+            <a href="{% url 'dashboard_galeria' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-photo-video mr-2"></i> Mosaico Galería</a>
+            <a href="{% url 'dashboard_noticias' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-newspaper mr-2"></i> Noticias y Eventos</a>
+            <a href="{% url 'dashboard_admisiones' %}" class="block py-3 px-4 rounded hover:bg-blue-800"><i class="fas fa-user-edit mr-2"></i> Solicitudes Admisión</a>
+        </nav>
+    </aside>
+
+    <main class="flex-grow p-8 ml-64">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Administración de Contenido Doble (2 Por Sección)</h1>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-md h-fit">
+                <h3 class="text-xl font-bold mb-4 border-b pb-2">Nueva Sección</h3>
+                <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="w-full bg-[#d41118] text-white font-bold py-3 rounded-xl hover:bg-red-800 transition">Guardar Sección</button>
+                </form>
+            </div>
+            <div class="lg:col-span-2 grid grid-cols-1 gap-6">
+                {% for sec in secciones %}
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden p-6 flex items-center justify-between space-x-6">
+                    <div class="w-32 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0"><img src="{{ sec.imagen.url }}" class="w-full h-full object-cover"></div>
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-xl text-suazablue">{{ sec.titulo }}</h4>
+                        <p class="text-gray-500 text-sm mt-1 line-clamp-2">{{ sec.contenido }}</p>
+                    </div>
+                    <div class="flex flex-col space-y-2 items-end">
+                        <a href="{% url 'editar_seccion' sec.pk %}" class="text-blue-600 hover:text-blue-800 font-bold"><i class="fas fa-edit"></i> Editar</a>
+                        <a href="{% url 'eliminar_seccion' sec.pk %}" onclick="return confirm('¿Eliminar?');" class="text-red-600 hover:text-red-800 font-bold text-sm"><i class="fas fa-trash"></i> Borrar</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

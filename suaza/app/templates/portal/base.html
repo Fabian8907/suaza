@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/logo-suaza.png' %}">
+    <title>Institución Educativa Suazapawa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        suazablue: '#002878',
+                        suazared: '#E3003F',
+                        suazalight: '#f8fafc'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- GSAP Core para animaciones avanzadas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    {% block extra_css %}{% endblock extra_css %}
+
+    <style>
+        html, body { height: 100%; margin: 0; }
+        .wrapper { min-height: 100%; display: flex; flex-direction: column; }
+        #main-content { flex: 1 0 auto; background-color: #f8fafc; position: relative; z-index: 20; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
+        #site-footer { flex-shrink: 0; position: sticky; bottom: 0; left: 0; width: 100%; z-index: 10; }
+        #txt-colegio, #txt-suaza, #txt-pawa {
+            transition: color 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-[#001133] text-gray-800 font-sans">
+    
+    <nav id="main-nav" class="w-full fixed top-0 z-50 transition-all duration-500 py-6 bg-transparent text-white">
+        <div class="max-w-[95%] mx-auto px-4 relative">
+            <div class="flex justify-between items-center h-20">
+                
+                <a href="/" class="flex items-center space-x-3 text-3xl md:text-4xl font-black uppercase tracking-tighter" id="nav-logo">
+                    <img src="{% static 'img/logo-suaza.png' %}" alt="Logo" class="h-16 w-auto hidden md:block"> 
+                    <span class="leading-none select-none">
+                        <span id="txt-colegio" class="text-white block text-sm tracking-widest mb-0.5">Institución Educativa</span>
+                        <span class="block text-2xl md:text-3xl font-black">
+                            <span id="txt-suaza" class="text-white">SUAZA</span><span id="txt-pawa" class="text-white">PAWA</span>
+                        </span>
+                    </span>
+                </a>
+                
+                <div class="hidden xl:flex items-center space-x-6 text-sm font-bold tracking-wide">
+                    <div class="relative group">
+                        <button class="flex items-center hover:text-suazared transition-colors py-2 uppercase ">
+                            Institución Educativa <i class="fas fa-chevron-down ml-1 text-[10px]"></i>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-56 bg-white text-gray-800 border-t-4 border-suazared shadow-2xl opacity-0 translate-y-4 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-300 z-50">
+                            <a href="{% url 'somos' %}" class="block px-4 py-3 hover:bg-gray-50 border-b">Historia</a>
+                            <a href="{% url 'misionvision' %}" class="block px-4 py-3 hover:bg-gray-50 border-b">Nuestra Institución <i class="fas fa-chevron-right float-right mt-1 text-xs"></i></a>
+                            <a href="{% url 'alumno' %}" class="block px-4 py-3 hover:bg-gray-50 border-b">Perfil Alumno <i class="fas fa-chevron-right float-right mt-1 text-xs"></i></a>
+                            <a href="{% url 'docente' %}" class="block px-4 py-3 hover:bg-gray-50 border-b">Perfil  Docente</a>
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-50 text-suazared border-b">Galería Institucional</a>
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-50 border-b">Video Institucional</a>
+                        </div>
+                    </div>
+
+                    <div class="relative group">
+                        <button class="flex items-center hover:text-suazared transition-colors py-2 uppercase">
+                            ZONA ACADÉMICA <i class="fas fa-chevron-down ml-1 text-[10px]"></i>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-56 bg-white text-gray-800 border-t-4 border-suazared shadow-2xl opacity-0 translate-y-4 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-300 z-50">
+                            <a href="https://classnet.com.co/suazapawa/" class="block px-4 py-3 hover:bg-gray-50 border-b">Web Académica</a>
+                            <a href="https://www.preescolarsuazapawa.com/" class="block px-4 py-3 hover:bg-gray-50 border-b">Preescolar</a>
+                            <a href="https://www.primaria-1-3suazapawa.com/" class="block px-4 py-3 hover:bg-gray-50 border-b">Primaria Grados 1-3</a>
+                            <a href="https://www.basica-4-7suazapawa.com/" class="block px-4 py-3 hover:bg-gray-50 border-b">Básica Grados 4-7</a>
+                            <a href="https://www.media-8-11suazapawa.com/" class="block px-4 py-3 hover:bg-gray-50">Media Grados 8-11</a>
+                        </div>
+                    </div>
+
+                    <div class="relative group">
+                        <button class="flex items-center hover:text-suazared transition-colors py-2 uppercase">
+                            BIENESTAR ESTUDIANTIL <i class="fas fa-chevron-down ml-1 text-[10px]"></i>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-56 bg-white text-gray-800 border-t-4 border-suazared shadow-2xl opacity-0 translate-y-4 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-300 z-50">
+                            <a href="{% url 'transporte' %}" class="block px-4 py-3 hover:bg-gray-50 border-b">Transporte</a>
+                            <a href="{% url 'restaurante' %}" class="block px-4 py-3 hover:bg-gray-50 border-b">Restaurante</a>
+                            <a href="{% url 'enfermeria' %}" class="block px-4 py-3 hover:bg-gray-50 border-b">Enfermería</a>
+                            <a href="{% url 'seguridad' %}" class="block px-4 py-3 hover:bg-gray-50">Seguridad</a>
+                        </div>
+                    </div>
+
+                    <div class="relative group">
+                        <button class="flex items-center hover:text-suazared transition-colors py-2 uppercase">
+                            CONTÁCTENOS <i class="fas fa-chevron-down ml-1 text-[10px]"></i>
+                        </button>
+                    </div>
+
+                    <a href="#" class="hover:text-suazared transition-colors py-2 uppercase"> PAGOS</a>
+                    
+                    <a href="#admisiones" class="bg-suazared text-white px-6 py-3 rounded-lg hover:bg-red-800 transition-all uppercase flex items-center shadow-lg">
+                        ADMISIONES 2027 <i class="fas fa-chevron-down ml-2 text-[10px]"></i>
+                    </a>
+
+                    <!-- BOTÓN DE LOGIN Y ACCESO AL DASHBOARD -->
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard_carrusel' %}" class="bg-suazablue text-white px-5 py-2.5 rounded-lg hover:bg-blue-800 transition border border-white/20 ml-2">
+                            <i class="fas fa-shield-alt mr-2"></i>Panel
+                        </a>
+                        <form action="{% url 'logout' %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-gray-300 hover:text-red-500 text-xl ml-3" title="Cerrar Sesión">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="hover:text-suazared transition-colors py-2 ml-4">
+                            <i class="fas fa-user-circle text-2xl"></i>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="xl:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-3xl focus:outline-none"><i class="fas fa-bars"></i></button>
+                </div>
+            </div>
+
+            <!-- CONTENEDOR DEL MENÚ MÓVIL DESPLEGABLE -->
+            <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white text-[#001133] shadow-2xl rounded-b-2xl p-4 flex-col space-y-3 font-bold border-t-4 border-suazared z-50">
+                <a href="{% url 'somos' %}" class="block py-2 border-b">Nuestra Institución</a>
+                <a href="{% url 'misionvision' %}" class="block py-2 border-b">Misión y Visión</a>
+                <a href="{% url 'transporte' %}" class="block py-2 border-b">Bienestar Estudiantil</a>
+                <a href="#admisiones" class="block py-2 border-b text-suazared">Admisiones 2027</a>
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard_carrusel' %}" class="block py-2 border-b text-suazablue">
+                        <i class="fas fa-shield-alt mr-2"></i> Panel de Control
+                    </a>
+                    <form action="{% url 'logout' %}" method="post" class="block py-2">
+                        {% csrf_token %}
+                        <button type="submit" class="text-red-600"><i class="fas fa-sign-out-alt mr-2"></i> Cerrar Sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="block py-2 text-gray-500">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Iniciar Sesión Administrador
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <a href="https://wa.me/573000000000" target="_blank" class="fixed bottom-8 right-8 bg-[#25D366] text-white w-16 h-16 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 z-[100] flex items-center justify-center text-4xl">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    
+    <!-- Botón Flotante Tyquy Bot -->
+    <button id="tyquy-btn" class="fixed bottom-[110px] right-8 w-16 h-16 bg-white rounded-full shadow-2xl hover:scale-110 transition-all duration-300 z-[101] flex items-center justify-center border-[3px] border-suazablue overflow-hidden">
+        <img src="{% static 'img/tyquy-bot.png' %}" alt="Tyquy Bot IA" class="w-full h-full object-cover">
+    </button>
+
+    <!-- Ventana del Chat Tyquy Bot -->
+    <div id="tyquy-chat-window" class="fixed bottom-[180px] right-8 w-80 md:w-96 bg-white rounded-2xl shadow-2xl z-[101] hidden flex-col border border-gray-200 overflow-hidden transform transition-all duration-300">
+        <div class="bg-suazablue text-white p-4 flex justify-between items-center shadow-md z-10">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white rounded-full p-1">
+                    <img src="{% static 'img/tyquy-bot.png' %}" class="w-full h-full object-cover rounded-full">
+                </div>
+                <div>
+                    <h4 class="font-bold leading-tight">Tyquy Bot</h4>
+                    <span class="text-xs text-green-400 flex items-center"><span class="w-2 h-2 bg-green-400 rounded-full mr-1 animate-pulse"></span> En línea (IA)</span>
+                </div>
+            </div>
+            <button id="tyquy-close-btn" class="text-white hover:text-suazared transition focus:outline-none">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div id="tyquy-chat-body" class="p-4 h-72 overflow-y-auto bg-[#f8fafc] flex flex-col space-y-4 text-sm scroll-smooth">
+            <div class="bg-white border border-gray-200 text-gray-700 p-3 rounded-2xl rounded-tl-none self-start max-w-[85%] shadow-sm">
+                ¡Hola! Soy <strong>Tyquy</strong>, la inteligencia artificial de Suazapawa. 🤖<br><br>¿Tienes alguna duda sobre admisiones, instalaciones o procesos académicos? ¡Pregúntame!
+            </div>
+        </div>
+        <div class="p-3 border-t border-gray-200 bg-white flex items-center space-x-2">
+            <input type="text" id="tyquy-input" class="flex-1 bg-gray-100 border border-transparent rounded-full px-4 py-2 focus:outline-none focus:bg-white focus:border-suazablue text-sm transition" placeholder="Escribe tu pregunta...">
+            <button id="tyquy-send-btn" class="bg-suazared text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-800 transition shadow-md">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <div id="main-content">
+            {% block content %}{% endblock content %}
+        </div>
+
+        <footer id="site-footer" class="bg-[#001133] text-white pt-28 pb-16">
+            <div class="max-w-[90%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-16">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <img src="{% static 'img/logo-suaza.png' %}" class="h-20 bg-white rounded p-1">
+                        <h3 class="text-3xl font-black leading-none">
+                            Institución Educativa<br><span class="text-suazared">SUAZAPAWA</span>
+                        </h3>
+                    </div>
+                    <ul class="space-y-4 text-gray-300 font-light text-base">
+                        <li><i class="fas fa-phone mr-3 text-suazared"></i> Celular: 310 767 6260</li>
+                        <li><i class="fab fa-whatsapp mr-3 text-suazared"></i> Admisiones: 310 550 5718</li>
+                        <li><i class="fas fa-envelope mr-3 text-suazared"></i> info@suazapawa.edu.co</li>
+                        <li><i class="fas fa-map-marker-alt mr-3 text-suazared"></i> Via Duitama-Nobsa Km 13, Nobsa, Boyacá</li>
+                    </ul>
+                    <div class="mt-8">
+                        <h4 class="font-bold mb-4">Síguenos en redes</h4>
+                        <div class="flex space-x-3">
+                            <a href="https://www.facebook.com/suazapawafanpage" class="w-10 h-10 rounded-full bg-suazared flex items-center justify-center hover:bg-red-800 transition text-white"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.instagram.com/suazapawa/" class="w-10 h-10 rounded-full bg-suazared flex items-center justify-center hover:bg-red-800 transition text-white"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col space-y-4 font-bold text-base">
+                    <a href="#" class="hover:text-suazared transition">Comunícate con nosotros</a>
+                    <a href="#" class="border border-white/20 px-6 py-3 rounded inline-block w-max hover:bg-white/10 transition text-sm font-normal">Ver formulario de contacto</a>
+                    <a href="#" class="hover:text-suazared transition mt-4">Admisiones 2027</a>
+                    <a href="#" class="hover:text-suazared transition mt-4">Trabaja con nosotros</a>
+                    <a href="#" class="border border-white/20 px-6 py-3 rounded inline-block w-max hover:bg-white/10 transition text-sm font-normal">Ver formulario de vacantes</a>
+                    <a href="#" class="hover:text-suazared transition mt-4">Comprometidos con la calidad</a>
+                    <a href="#" class="border border-white/20 px-6 py-3 rounded inline-block w-max hover:bg-white/10 transition text-sm font-normal">Ver formulario PQRS</a>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 text-lg">Políticas y Certificaciones</h4>
+                    <div class="flex space-x-6 items-center bg-white p-6 rounded-xl shadow-inner">
+                        <img src="{% static 'img/cert1.png' %}" class="h-16 opacity-90 mix-blend-multiply">
+                        <img src="{% static 'img/cert2.png' %}" class="h-16 opacity-90 mix-blend-multiply">
+                    </div>
+                </div>
+            </div>
+            <div class="w-full bg-suazared text-center py-4 mt-20 text-base font-bold shadow-inner">
+                Realizado por Suazapawa IT. Todos los derechos reservados &copy; 2026
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script>
+        AOS.init({ once: true, duration: 800, offset: 100 });
+
+        const nav = document.getElementById('main-nav');
+        const txtColegio = document.getElementById('txt-colegio');
+        const txtSuaza = document.getElementById('txt-suaza');
+        const txtPawa = document.getElementById('txt-pawa');
+
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 40) {
+                nav.classList.remove('bg-transparent', 'text-white', 'py-6');
+                nav.classList.add('bg-white', 'text-gray-900', 'shadow-xl', 'py-2');
+                txtColegio.style.color = '#002878';
+                txtSuaza.style.color = '#002878';
+                txtPawa.style.color = '#E3003F';
+            } else {
+                nav.classList.remove('bg-white', 'text-gray-900', 'shadow-xl', 'py-2');
+                nav.classList.add('bg-transparent', 'text-white', 'py-6');
+                txtColegio.style.color = '#FFFFFF';
+                txtSuaza.style.color = '#FFFFFF';
+                txtPawa.style.color = '#E3003F';
+            }
+        });
+
+        txtColegio.style.color = '#FFFFFF';
+        txtSuaza.style.color = '#FFFFFF';
+        txtPawa.style.color = '#E3003F';
+
+        // Lógica del menú móvil implementada correctamente
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                mobileMenu.classList.toggle('flex');
+            });
+        }
+
+        // Lógica de Bot IA (Tyquy Bot)
+        const tyquyBtn = document.getElementById('tyquy-btn');
+        const tyquyChat = document.getElementById('tyquy-chat-window');
+        const tyquyClose = document.getElementById('tyquy-close-btn');
+        const tyquyInput = document.getElementById('tyquy-input');
+        const tyquySend = document.getElementById('tyquy-send-btn');
+        const tyquyBody = document.getElementById('tyquy-chat-body');
+
+        tyquyBtn.addEventListener('click', () => {
+            tyquyChat.classList.toggle('hidden');
+            tyquyChat.classList.toggle('flex');
+            if(!tyquyChat.classList.contains('hidden')){
+                tyquyInput.focus();
+            }
+        });
+
+        tyquyClose.addEventListener('click', () => {
+            tyquyChat.classList.add('hidden');
+            tyquyChat.classList.remove('flex');
+        });
+
+        function pushMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('p-3', 'rounded-2xl', 'max-w-[85%]', 'text-sm', 'shadow-sm', 'break-words');
+            
+            if (sender === 'user') {
+                msgDiv.classList.add('bg-suazablue', 'text-white', 'self-end', 'rounded-tr-none');
+            } else {
+                msgDiv.classList.add('bg-white', 'border', 'border-gray-200', 'text-gray-700', 'self-start', 'rounded-tl-none');
+            }
+            
+            msgDiv.innerHTML = text; 
+            tyquyBody.appendChild(msgDiv);
+            tyquyBody.scrollTop = tyquyBody.scrollHeight;
+        }
+
+        async function sendToAI() {
+            const messageText = tyquyInput.value.trim();
+            if (!messageText) return;
+
+            pushMessage(messageText, 'user');
+            tyquyInput.value = '';
+
+            const typingIndicator = document.createElement('div');
+            typingIndicator.id = 'tyquy-typing';
+            typingIndicator.classList.add('bg-gray-100', 'text-gray-500', 'p-3', 'rounded-2xl', 'rounded-tl-none', 'self-start', 'text-xs', 'italic');
+            typingIndicator.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Tyquy está escribiendo...';
+            tyquyBody.appendChild(typingIndicator);
+            tyquyBody.scrollTop = tyquyBody.scrollHeight;
+
+            try {
+                const response = await fetch('/api/chat/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ prompt: messageText })
+                });
+
+                const data = await response.json();
+                
+                document.getElementById('tyquy-typing').remove();
+                
+                if (data.reply) {
+                    pushMessage(data.reply, 'bot');
+                } else {
+                    pushMessage("Lo siento, hubo un error de formato al procesar la respuesta.", 'bot');
+                }
+
+            } catch (error) {
+                document.getElementById('tyquy-typing')?.remove();
+                pushMessage("⚠️ Error de conexión. El servidor de IA no está disponible en este momento.", 'bot');
+                console.error("Error AI Chat:", error);
+            }
+        }
+
+        tyquySend.addEventListener('click', sendToAI);
+        tyquyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendToAI();
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

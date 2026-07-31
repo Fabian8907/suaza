@@ -1,0 +1,55 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block title %}Restaurante Escolar | Colegio Suazapawa{% endblock %}
+
+{% block content %}
+<style>
+.exp-title { font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem, 4vw, 4.0rem); font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; color: #0B1A3E; margin: 0; text-align: center; }
+.exp-title em { font-style: normal; font-weight: 900; color: #D0021B; position: relative; }
+.exp-title em::after { content: ''; position: absolute; left: 0; bottom: -4px; right: 0; height: 3px; background: linear-gradient(to right, #D0021B, rgba(208,2,27,0.15)); border-radius: 2px; transform: scaleX(0); transform-origin: left; animation: expLine 0.8s ease forwards 1s; }
+@keyframes expLine { to { transform: scaleX(1); } }
+</style>
+
+<section class="bg-gradient-to-b from-sky-50 to-white py-16 px-4">
+  <div class="max-w-5xl mx-auto space-y-16">
+
+    <div class="text-center" data-aos="fade-up">
+      <h2 class="exp-title">🍽️ Restaurante <em>Suazapawa</em></h2><br>
+    </div>
+
+    <div class="relative overflow-hidden rounded-3xl shadow-2xl" data-aos="zoom-in">
+      <img src="{% static 'img/restaurante1.JPG' %}" alt="Restaurante escolar Suazapawa" class="w-full object-cover object-center h-80 md:h-[450px] transition-transform duration-700 hover:scale-105">
+    </div>
+
+    <div class="text-center max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+      <h3 class="text-3xl md:text-4xl font-bold text-blue-900 mb-6">Comida sana, ambiente acogedor</h3>
+      <p class="text-slate-700 text-lg md:text-xl leading-relaxed">
+        Nuestro restaurante escolar ofrece menús balanceados, preparados bajo estrictas medidas de higiene y seguridad alimentaria, con supervisión nutricional, porciones adecuadas y atención personalizada.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10" data-aos="fade-up" data-aos-delay="200">
+      <div class="bg-white p-8 rounded-3xl shadow-xl border-t-8 border-red-600">
+        <h4 class="text-2xl font-bold text-red-700 mb-3"><i class="fas fa-apple-alt mr-2"></i> Menús Balanceados</h4>
+        <p class="text-slate-700 text-lg leading-relaxed">Diseñados para aportar los nutrientes necesarios para el desarrollo físico y cognitivo óptimo de nuestros estudiantes a lo largo del día escolar.</p>
+      </div>
+
+      <div class="bg-white p-8 rounded-3xl shadow-xl border-t-8 border-sky-600">
+        <h4 class="text-2xl font-bold text-blue-900 mb-3"><i class="fas fa-hands-wash mr-2"></i> Higiene y Seguridad</h4>
+        <p class="text-slate-700 text-lg leading-relaxed">Manipulación de alimentos bajo los más estrictos estándares de calidad y salubridad, garantizando tranquilidad para todas las familias.</p>
+      </div>
+
+      <div class="bg-white p-8 rounded-3xl shadow-xl border-t-8 border-blue-900">
+        <h4 class="text-2xl font-bold text-blue-900 mb-3"><i class="fas fa-utensils mr-2"></i> Espacios Acogedores</h4>
+        <p class="text-slate-700 text-lg leading-relaxed">Un comedor organizado, limpio y amplio que permite disfrutar de los alimentos en un ambiente amigable y de sana convivencia.</p>
+      </div>
+
+      <div class="bg-white p-8 rounded-3xl shadow-xl border-t-8 border-red-600">
+        <h4 class="text-2xl font-bold text-red-700 mb-3"><i class="fas fa-seedling mr-2"></i> Hábitos Saludables</h4>
+        <p class="text-slate-700 text-lg leading-relaxed">Promovemos el consumo de frutas y vegetales, educando a los estudiantes sobre la importancia de una buena alimentación desde temprana edad.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
